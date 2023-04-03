@@ -31,11 +31,11 @@ type VaultKubernetesAuthBackendSpec struct {
 	// kubernetesCACert PEM encoded CA cert for use by the TLS client used to talk with the Kubernetes API. NOTE: Every line must end with a newline: \n
 	// if omitted will default to the content of the file "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt" in the operator pod
 	// +kubebuilder:validation:Optional
-	KubernetesCACert string `json:"kubernetesCACert,omitempty"`
+	KubernetesCACert string `json:"kubernetesCaCert,omitempty"`
 
 	// PEMKeys Optional list of PEM-formatted public keys or certificates used to verify the signatures of Kubernetes service account JWTs. If a certificate is given, its public key will be extracted. Not every installation of Kubernetes exposes these keys.
 	// +kubebuilder:validation:Optional
-	PEMKeys []string `json:"PEMKeys,omitempty"`
+	PEMKeys []string `json:"pemKeys,omitempty"`
 
 	// Issuer Optional JWT issuer. If no issuer is specified, then this plugin will use kubernetes/serviceaccount as the default issuer. See these instructions for looking up the issuer for a given Kubernetes cluster.
 	// +kubebuilder:validation:Optional
@@ -44,17 +44,12 @@ type VaultKubernetesAuthBackendSpec struct {
 	// DisableISSValidation Disable JWT issuer validation. Allows to skip ISS validation.
 	// +kubebuilder:validation:Optional
 	// +kubebuilder:default=false
-	DisableISSValidation bool `json:"disableISSValidation,omitempty"`
+	DisableISSValidation bool `json:"disableIssValidation,omitempty"`
 
 	// DisableLocalCAJWT Disable defaulting to the local CA cert and service account JWT when running in a Kubernetes pod.
 	// +kubebuilder:validation:Optional
 	// +kubebuilder:default=false
-	DisableLocalCAJWT bool `json:"disableLocalCAJWT,omitempty"`
-
-	// retrievedTokenReviewerJWT string `json:"-"`
-
-	// Kubernetes specific auth configuration, requires that the Method be set to kubernetes.
-	// Kubernetes *VaultAuthConfigKubernetes `json:"kubernetes,omitempty"`
+	DisableLocalCAJWT bool `json:"disableLocalCaJwt,omitempty"`
 }
 
 // VaultKubernetesAuthBackendStatus defines the observed state of VaultKubernetesAuthBackendSpec
