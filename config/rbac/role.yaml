@@ -153,6 +153,32 @@ rules:
 - apiGroups:
   - secrets.hashicorp.com
   resources:
+  - vaultkubernetesauthbackends
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - secrets.hashicorp.com
+  resources:
+  - vaultkubernetesauthbackends/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - secrets.hashicorp.com
+  resources:
+  - vaultkubernetesauthbackends/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - secrets.hashicorp.com
+  resources:
   - vaultpkisecrets
   verbs:
   - create

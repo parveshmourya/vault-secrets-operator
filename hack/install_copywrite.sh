@@ -33,15 +33,15 @@ function cleanup {
 }
 trap cleanup EXIT SIGINT
 
-pushd $tempdir > /dev/null
+#pushd $tempdir > /dev/null
     getGH "${base_url}/SHA256SUMS"
     getGH "${base_url}/${archive_file}" "${archive_file}"
     grep "${archive_file}" SHA256SUMS | sha256sum -c -
     tar -xzf "${archive_file}" copywrite
-popd > /dev/null
+#popd > /dev/null
 
 rm -f "${dest_file%/*}"/copywrite*
-mv "${tempdir}/copywrite" "${dest_file}"
+mv copywrite "${dest_file}"
 ln -sf "${dest_filename}" "${dest_file%/*}/copywrite"
 
-popd > /dev/null
+#popd > /dev/null
