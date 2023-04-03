@@ -58,6 +58,12 @@ func GetVaultAuthAndTarget(ctx context.Context, c client.Client, obj client.Obje
 			Namespace: o.Namespace,
 			Name:      o.Name,
 		}
+	case *secretsv1alpha1.VaultAuthBackend:
+		authRef = o.Spec.VaultAuthRef
+		target = types.NamespacedName{
+			Namespace: o.Namespace,
+			Name:      o.Name,
+		}
 	case *secretsv1alpha1.VaultKubernetesAuthBackend:
 		authRef = o.Spec.VaultAuthRef
 		target = types.NamespacedName{
