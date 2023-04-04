@@ -5,6 +5,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 
 	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
@@ -67,7 +68,7 @@ func (r *VaultKubernetesAuthBackendReconciler) Reconcile(ctx context.Context, re
 		return r.handleFinalizer(ctx, c, o)
 	}
 
-	_, err = c.Write(ctx, o.Spec.Path, map[string]interface{}{
+	_, err = c.Write(ctx, fmt.Sprintf("/auth/%s/config", o.Spec.Path), map[string]interface{}{
 		"kubernetes_host":        o.Spec.KubernetesHost,
 		"kubernetes_ca_cert":     o.Spec.KubernetesCACert,
 		"pem_keys":               o.Spec.PEMKeys,
@@ -80,17 +81,19 @@ func (r *VaultKubernetesAuthBackendReconciler) Reconcile(ctx context.Context, re
 		return ctrl.Result{}, err
 	}
 
-	if o.Status.Path != o.Spec.Path {
+	if o.Status.Path != "" && o.Status.Path != o.Spec.Path {
 		if _, err := c.Delete(ctx, o.Status.Path); err != nil {
 			return ctrl.Result{}, err
 		}
 	}
 
-	o.Status.Valid = true
-	o.Status.Path = o.Spec.Path
+	if !o.Status.Valid || o.Status.Path != o.Spec.Path {
+		o.Status.Valid = true
+		o.Status.Path = o.Spec.Path
 
-	if err := r.Status().Update(ctx, o); err != nil {
-		return ctrl.Result{}, err
+		if err := r.Status().Update(ctx, o); err != nil {
+			return ctrl.Result{}, err
+		}
 	}
 
 	return ctrl.Result{}, nil

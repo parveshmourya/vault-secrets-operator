@@ -83,7 +83,7 @@ func (r *VaultAuthBackendReconciler) Reconcile(ctx context.Context, req ctrl.Req
 			return ctrl.Result{}, err
 		}
 
-		if o.Status.Path != o.Spec.Path {
+		if o.Status.Path != "" && o.Status.Path != o.Spec.Path {
 			if _, err := c.Delete(ctx, fmt.Sprintf("/sys/auth/%s", o.Status.Path)); err != nil {
 				return ctrl.Result{}, err
 			}
