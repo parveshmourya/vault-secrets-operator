@@ -68,26 +68,35 @@ func (r *VaultAuthBackendReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		return r.handleFinalizer(ctx, c, o)
 	}
 
-	_, err = c.Write(ctx, fmt.Sprintf("/sys/auth/%s", o.Spec.Path), map[string]interface{}{
-		"description": o.Spec.Description,
-		"type":        o.Spec.Type,
-	})
-
+	path, err := c.Read(ctx, fmt.Sprintf("/sys/auth/%s", o.Spec.Path))
 	if err != nil {
 		return ctrl.Result{}, err
 	}
 
-	if o.Status.Path != o.Spec.Path {
-		if _, err := c.Delete(ctx, fmt.Sprintf("/sys/auth/%s", o.Status.Path)); err != nil {
+	if path == nil {
+		_, err = c.Write(ctx, fmt.Sprintf("/sys/auth/%s", o.Spec.Path), map[string]interface{}{
+			"description": o.Spec.Description,
+			"type":        o.Spec.Type,
+		})
+
+		if err != nil {
 			return ctrl.Result{}, err
+		}
+
+		if o.Status.Path != o.Spec.Path {
+			if _, err := c.Delete(ctx, fmt.Sprintf("/sys/auth/%s", o.Status.Path)); err != nil {
+				return ctrl.Result{}, err
+			}
 		}
 	}
 
-	o.Status.Valid = true
-	o.Status.Path = o.Spec.Path
+	if !o.Status.Valid || o.Status.Path != o.Spec.Path {
+		o.Status.Valid = true
+		o.Status.Path = o.Spec.Path
 
-	if err := r.Status().Update(ctx, o); err != nil {
-		return ctrl.Result{}, err
+		if err := r.Status().Update(ctx, o); err != nil {
+			return ctrl.Result{}, err
+		}
 	}
 
 	return ctrl.Result{}, nil
