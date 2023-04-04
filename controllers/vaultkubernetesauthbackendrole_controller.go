@@ -68,8 +68,7 @@ func (r *VaultKubernetesAuthBackendRoleReconciler) Reconcile(ctx context.Context
 		return r.handleFinalizer(ctx, c, o)
 	}
 
-	_, err = c.Write(ctx, fmt.Sprintf("/auth/%s/role", o.Spec.Path), map[string]interface{}{
-		"name":                             o.Spec.Name,
+	_, err = c.Write(ctx, fmt.Sprintf("/auth/%s/role/%s", o.Spec.Path, o.Spec.Name), map[string]interface{}{
 		"audience":                         o.Spec.Audience,
 		"alias_name_source":                o.Spec.AliasNameSource,
 		"bound_service_account_names":      o.Spec.BoundServiceAccountNames,

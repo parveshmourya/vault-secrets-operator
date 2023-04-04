@@ -70,6 +70,12 @@ func GetVaultAuthAndTarget(ctx context.Context, c client.Client, obj client.Obje
 			Namespace: o.Namespace,
 			Name:      o.Name,
 		}
+	case *secretsv1alpha1.VaultKubernetesAuthBackendRole:
+		authRef = o.Spec.VaultAuthRef
+		target = types.NamespacedName{
+			Namespace: o.Namespace,
+			Name:      o.Name,
+		}
 	default:
 		return nil, types.NamespacedName{}, fmt.Errorf("unsupported type %T", o)
 	}
