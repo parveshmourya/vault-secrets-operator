@@ -179,6 +179,32 @@ rules:
 - apiGroups:
   - secrets.hashicorp.com
   resources:
+  - vaultkubernetesauthbackendroles
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - secrets.hashicorp.com
+  resources:
+  - vaultkubernetesauthbackendroles/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - secrets.hashicorp.com
+  resources:
+  - vaultkubernetesauthbackendroles/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - secrets.hashicorp.com
+  resources:
   - vaultkubernetesauthbackends
   verbs:
   - create
